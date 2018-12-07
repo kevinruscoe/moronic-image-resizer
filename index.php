@@ -3,8 +3,11 @@
 require "vendor/autoload.php";
 
 use Intervention\Image\ImageManagerStatic as Image;
+use ZipStream\Option\Archive as ArchiveOption;
 
-$zip = new ZipStream\ZipStream('images.zip');
+$opt = new ArchiveOption();
+$opt->setSendHttpHeaders(true);
+$zip = new ZipStream\ZipStream('images.zip', $opt);
 
 if (isset($_FILES['files'])) {
     $files = $_FILES['files'];
@@ -25,10 +28,10 @@ if (isset($_FILES['files'])) {
                 exit;
             }
 
-            $zip->addFile(sprintf('image-%s.jpg', $i), $image->stream('jpg', 100));
+            $zip->addFile(sprintf('image-%s.jpg', $i), $image->encode('jpg'));
         }
 
-        $zip->finish();
+        return $zip->finish();
     }catch(\Intervention\Image\Exception\NotReadableException $e) {
         $str = str_repeat("All work and no play makes Jack a dull boy. ", 10000);
 
