@@ -1,5 +1,4 @@
 <template>
-
     <form class="resizer" :action="action" method='post' enctype="multipart/form-data">
 
         <div class="form-field">
@@ -29,7 +28,7 @@
         props: ['action'],
         data() {
             return {
-                files: 0
+                files: 0,
             }
         },
         computed: {

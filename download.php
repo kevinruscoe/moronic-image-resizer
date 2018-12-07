@@ -10,20 +10,26 @@ $files = $_FILES['files'];
 $width = $_POST['width'] ?? 100;
 $height = $_POST['height'] ?? 100;
 
-for ($i = 0; $i < count($files) - 1; $i++) { 
-    $image = Image::make($files['tmp_name'][$i])
-        ->fit($width, $height);
+try {
+    for ($i = 0; $i < count($files) - 1; $i++) { 
+        $image = Image::make($files['tmp_name'][$i])
+            ->fit($width, $height);
 
-    if (count($files['name']) == 1) {
-        header('Content-Type: image/jpg');
-        header('Content-Disposition: attachment; filename="image.jpg"');
+        if (count($files['name']) == 1) {
+            header('Content-Type: image/jpg');
+            header('Content-Disposition: attachment; filename="image.jpg"');
 
-        print $image->response('jpg', 100);
+            print $image->response('jpg', 100);
 
-        exit;
+            exit;
+        }
+
+        $zip->addFile(sprintf('image-%s.jpg', $i), $image->stream('jpg', 100));
     }
 
-    $zip->addFile(sprintf('image-%s.jpg', $i), $image->stream('jpg', 100));
-}
+    $zip->finish();
+}catch(\Intervention\Image\Exception\NotReadableException $e) {
+    $str = str_repeat("All work and no play makes Jack a dull boy. ", 10000);
 
-$zip->finish();
+    exit($str);
+}
