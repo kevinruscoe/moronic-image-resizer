@@ -31,7 +31,8 @@ if (isset($_FILES['files'])) {
             $zip->addFile(sprintf('image-%s.jpg', $i), $image->encode('jpg'));
         }
 
-        return $zip->finish();
+        $zip->finish();
+        
     }catch(\Intervention\Image\Exception\NotReadableException $e) {
         $str = str_repeat("All work and no play makes Jack a dull boy. ", 10000);
 
